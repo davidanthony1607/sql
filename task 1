@@ -1,0 +1,108 @@
+CREATE TABLE Books (
+    BookID INT PRIMARY KEY AUTO_INCREMENT,
+    Title VARCHAR(255) NOT NULL,
+    Author VARCHAR(255) NOT NULL,
+    ISBN VARCHAR(13) UNIQUE NOT NULL,
+    PublishedYear INT,
+    CopiesAvailable INT DEFAULT 1
+);
+
+CREATE TABLE Members (
+    MemberID INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) UNIQUE NOT NULL,
+    JoinDate DATE DEFAULT CURRENT_DATE,
+    IsActive BOOLEAN DEFAULT TRUE
+);
+
+
+CREATE TABLE Transactions (
+    TransactionID INT PRIMARY KEY AUTO_INCREMENT,
+    BookID INT,
+    MemberID INT,
+    BorrowDate DATE DEFAULT CURRENT_DATE,
+    ReturnDate DATE,
+    FOREIGN KEY (BookID) REFERENCES Books(BookID),
+    FOREIGN KEY (MemberID) REFERENCES Members(MemberID)
+);
+
+
+INSERT INTO Books (Title, Author, ISBN, PublishedYear, CopiesAvailable) VALUES
+('The Great Gatsby', 'F. Scott Fitzgerald', '9780743273565', 1925, 3),
+('1984', 'George Orwell', '9780451524935', 1949, 2),
+('To Kill a Mockingbird', 'Harper Lee', '9780061120084', 1960, 4);
+
+
+INSERT INTO Members (Name, Email) VALUES
+('Alice Johnson', 'alice@example.com'),
+('Bob Smith', 'bob@example.com');
+
+
+INSERT INTO Transactions (BookID, MemberID, BorrowDate) VALUES
+(1, 1, '2024-10-01'),
+(2, 1, '2024-10-02');
+
+
+UPDATE Books
+SET CopiesAvailable = CopiesAvailable - 1
+WHERE BookID = 1;  -- Assuming a book has been borrowed
+
+
+UPDATE Members
+SET IsActive = FALSE
+WHERE MemberID = 2;  -- Mark Bob as inactive
+
+
+DELETE FROM Books
+WHERE BookID = 3;  -- Delete 'To Kill a Mockingbird'
+
+
+DELETE FROM Members
+WHERE MemberID = 1;  -- Delete Alice
+
+SELECT * FROM Books;
+
+
+SELECT t.TransactionID, b.Title, m.Name, t.BorrowDate, t.ReturnDate
+FROM Transactions t
+JOIN Books b ON t.BookID = b.BookID
+JOIN Members m ON t.MemberID = m.MemberID;
+
+
+SELECT b.Title, t.BorrowDate
+FROM Transactions t
+JOIN Books b ON t.BookID = b.BookID
+WHERE t.MemberID = 1;  -- Assuming MemberID 1 is of Alice
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
